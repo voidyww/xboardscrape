@@ -22,7 +22,12 @@ app.post("/scrape", async (req, res) => {
             await page.goto(communityURL, { waitUntil: "domcontentloaded", timeout: 30000 });
 
             // Wait for community name to appear
-            await page.waitForSelector('h2', { timeout: 200000 });
+            try {
+                await page.waitForSelector('h2', { timeout: 10000 });
+            } catch (err) {
+                console.warn("h2 not found, continuing with null values.");
+            }
+            
 
             // Extract both image and community name
             const scrapedData = await page.evaluate(() => {
